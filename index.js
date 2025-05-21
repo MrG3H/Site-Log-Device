@@ -1,11 +1,16 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
-require('dotenv').config();
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://logdesempenhodevice-default-rtdb.firebaseio.com",
+  credential: admin.credential.cert({
+    projectId: process.env.PROJECT_ID,
+    clientEmail: process.env.CLIENT_EMAIL,
+    privateKey: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
+  }),
+  databaseURL: process.env.DATABASE_URL,
 });
 
 const app = express();
@@ -13,7 +18,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-// Rota para obter todos os logs
 app.get('/api/logs', async (req, res) => {
   try {
     const db = admin.database();
@@ -25,7 +29,6 @@ app.get('/api/logs', async (req, res) => {
   }
 });
 
-// Rota para buscar logs por ID de device
 app.get('/api/logs/:deviceId', async (req, res) => {
   try {
     const db = admin.database();
@@ -39,5 +42,5 @@ app.get('/api/logs/:deviceId', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando em https://site-log-device.onrender.com:${PORT}`);
+  console.log(`✅ Servidor rodando na porta ${PORT}`);
 });
