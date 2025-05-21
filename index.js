@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config();  // Só precisa localmente, no Render pode até remover se quiser
 
 const express = require('express');
 const cors = require('cors');
@@ -10,7 +10,7 @@ admin.initializeApp({
     clientEmail: process.env.CLIENT_EMAIL,
     privateKey: process.env.PRIVATE_KEY.replace(/\\n/g, '\n'),
   }),
-  databaseURL: process.env.DATABASE_URL,
+  databaseURL: "https://logdesempenhodevice-default-rtdb.firebaseio.com",
 });
 
 const app = express();
@@ -18,6 +18,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
+// Rota para obter todos os logs
 app.get('/api/logs', async (req, res) => {
   try {
     const db = admin.database();
@@ -29,6 +30,7 @@ app.get('/api/logs', async (req, res) => {
   }
 });
 
+// Rota para buscar logs por ID de device
 app.get('/api/logs/:deviceId', async (req, res) => {
   try {
     const db = admin.database();
