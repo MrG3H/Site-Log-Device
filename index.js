@@ -3,9 +3,15 @@ const cors = require('cors');
 const admin = require('firebase-admin');
 const serviceAccount = require('./serviceAccountKey.json');
 
+const admin = require("firebase-admin");
+
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://logdesempenhodevice-default-rtdb.firebaseio.com"
+  credential: admin.credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  }),
+  databaseURL: "https://logdesempenhodevice-default-rtdb.firebaseio.com",
 });
 
 const app = express();
@@ -39,5 +45,5 @@ app.get('/api/logs/:deviceId', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
+  console.log(`✅ Servidor rodando em https://site-log-device.onrender.com:${PORT}`);
 });
