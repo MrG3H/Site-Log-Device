@@ -1,5 +1,3 @@
-require('dotenv').config();  // Só precisa localmente, no Render pode até remover se quiser
-
 const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
