@@ -22,7 +22,7 @@ window.buscarLogs = async function () {
   logContainer.innerHTML = 'Carregando logs do dispositivo...';
 
   try {
-    const response = await fetch(`http://localhost:3000/api/logs/${deviceId}`);
+    const response = await fetch(`https://site-log-device.onrender.com:3000/api/logs/${deviceId}`);
     const data = await response.json();
     const wrapper = data ? { [deviceId]: data } : {};
     processarLogs(wrapper);
@@ -38,7 +38,7 @@ window.carregarTodosLogs = async function () {
   logContainer.innerHTML = 'Carregando logs...';
 
   try {
-    const response = await fetch('http://localhost:3000/api/logs');
+    const response = await fetch('https://site-log-device.onrender.com:3000/api/logs');
     const data = await response.json();
     processarLogs(data);
   } catch (err) {
