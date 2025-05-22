@@ -23,21 +23,21 @@ const io = new Server(server, {
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.static('public')); // ✅ Serve arquivos estáticos (index.html, main.js...)
+app.use(express.static('public')); // ✅ Serve arquivos estáticos
 
 const db = admin.database();
 const logsRef = db.ref('logs');
 
-// ✅ Escutar alterações em tempo real e notificar via WebSocket
+// ✅ Escutar alterações e notificar via WebSocket
 logsRef.on('child_added', (snapshot) => {
   console.log('📥 Nova log detectada:', snapshot.key);
-  io.emit('nova_log', snapshot.key); // ✅ Emite evento para todos clientes
+  io.emit('nova_log', snapshot.key);
 });
 
 // ✅ Rotas REST
 app.get('/api/logs', async (req, res) => {
   try {
-    const snapshot = await db.ref('logs').once('value');
+    const snapshot = await logsRef.once('value');
     res.json(snapshot.val());
   } catch (error) {
     console.error("Erro ao buscar logs:", error);
@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
   console.log('✅ Novo cliente conectado via WebSocket');
 });
 
-// ✅ Substitua 'app.listen' por 'server.listen'
+// ✅ Iniciar servidor
 server.listen(PORT, () => {
   console.log(`✅ Servidor rodando na porta ${PORT}`);
 });
