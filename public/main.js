@@ -2,8 +2,11 @@ let todosLogs = [];
 let paginaAtual = 1;
 let limitePorPagina = 50;
 
-// ✅ Conectar ao WebSocket
-const socket = io();
+// ✅ Conectar ao WebSocket com reconexão automática
+const socket = io({
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000
+});
 
 // ✅ Quando uma nova log for emitida pelo backend, recarrega automaticamente.
 socket.on('nova_log', (deviceId) => {
@@ -33,11 +36,18 @@ window.buscarLogs = async function () {
   try {
     const response = await fetch(`/api/logs/${deviceId}`);
     const data = await response.json();
-    const wrapper = data ? { [deviceId]: data } : {};
+
+    if (!data) {
+      logContainer.innerHTML = '<p>Nenhum dado encontrado.</p>';
+      return;
+    }
+
+    const wrapper = { [deviceId]: data };
     processarLogs(wrapper);
+
   } catch (err) {
     logContainer.innerHTML = '<p>Erro ao buscar os dados.</p>';
-    console.error(err);
+    console.error('Erro ao buscar logs:', err);
   }
 };
 
@@ -49,10 +59,17 @@ window.carregarTodosLogs = async function () {
   try {
     const response = await fetch(`/api/logs`);
     const data = await response.json();
+
+    if (!data) {
+      logContainer.innerHTML = '<p>Nenhum log disponível.</p>';
+      return;
+    }
+
     processarLogs(data);
+
   } catch (err) {
     logContainer.innerHTML = '<p>Erro ao carregar os logs.</p>';
-    console.error(err);
+    console.error('Erro ao carregar logs:', err);
   }
 };
 
