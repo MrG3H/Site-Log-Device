@@ -28,10 +28,19 @@ app.use(express.static('public')); // ✅ Serve arquivos estáticos
 const db = admin.database();
 const logsRef = db.ref('logs');
 
-// ✅ Escutar alterações e notificar via WebSocket
+// ✅ Escutar todos os devices existentes ao iniciar
+logsRef.once('value', (snapshot) => {
+  snapshot.forEach((deviceSnap) => {
+    const deviceId = deviceSnap.key;
+    escutarLogsDoDevice(deviceId);
+  });
+});
+
+// ✅ Escutar novos devices adicionados
 logsRef.on('child_added', (snapshot) => {
-  console.log('📥 Nova log detectada:', snapshot.key);
-  io.emit('nova_log', snapshot.key);
+  const newDeviceId = snapshot.key;
+  console.log(`📥 Novo device detectado: ${newDeviceId}`);
+  escutarLogsDoDevice(newDeviceId);
 });
 
 // ✅ Rotas REST
@@ -44,6 +53,15 @@ app.get('/api/logs', async (req, res) => {
     res.status(500).send('Erro ao buscar logs');
   }
 });
+
+// ✅ Função para escutar novas logs dentro de um device
+function escutarLogsDoDevice(deviceId) {
+  const deviceRef = logsRef.child(deviceId);
+  deviceRef.on('child_added', (logSnap) => {
+    console.log(`📥 Nova log detectada para o device: ${deviceId}`);
+    io.emit('nova_log', deviceId);
+  });
+}
 
 app.get('/api/logs/:deviceId', async (req, res) => {
   try {
