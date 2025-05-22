@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
+const http = require('http');
+const { Server } = require('socket.io');
 
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -12,15 +14,29 @@ admin.initializeApp({
 });
 
 const app = express();
-app.use(express.static('public'));
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+  }
+});
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+app.use(express.static('public')); // ✅ Serve arquivos estáticos (index.html, main.js...)
 
-// Rota para obter todos os logs
+const db = admin.database();
+const logsRef = db.ref('logs');
+
+// ✅ Escutar alterações em tempo real e notificar via WebSocket
+logsRef.on('child_added', (snapshot) => {
+  console.log('📥 Nova log detectada:', snapshot.key);
+  io.emit('nova_log', snapshot.key); // ✅ Emite evento para todos clientes
+});
+
+// ✅ Rotas REST
 app.get('/api/logs', async (req, res) => {
   try {
-    const db = admin.database();
     const snapshot = await db.ref('logs').once('value');
     res.json(snapshot.val());
   } catch (error) {
@@ -29,10 +45,8 @@ app.get('/api/logs', async (req, res) => {
   }
 });
 
-// Rota para buscar logs por ID de device
 app.get('/api/logs/:deviceId', async (req, res) => {
   try {
-    const db = admin.database();
     const deviceId = req.params.deviceId;
     const snapshot = await db.ref(`logs/${deviceId}`).once('value');
     res.json(snapshot.val());
@@ -42,6 +56,12 @@ app.get('/api/logs/:deviceId', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+// ✅ WebSocket: cliente conectado
+io.on('connection', (socket) => {
+  console.log('✅ Novo cliente conectado via WebSocket');
+});
+
+// ✅ Substitua 'app.listen' por 'server.listen'
+server.listen(PORT, () => {
   console.log(`✅ Servidor rodando na porta ${PORT}`);
 });
