@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <title>Histórico de Logs dos Dispositivos</title>
   <link rel="stylesheet" href="style.css" />
+  
+  <!-- ✅ Socket.IO Client -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </head>
 <body>
   <h1>Histórico de Logs dos Dispositivos</h1>
@@ -25,7 +28,7 @@
   <div id="log-container">Carregando logs...</div>
   <div class="pagination" id="pagination"></div>
 
-  <!-- 🚀 JS via arquivo externo -->
-  <script type="module" src="main.js"></script>
+  <!-- ✅ Removido type="module" -->
+  <script src="main.js"></script>
 </body>
 </html>
