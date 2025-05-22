@@ -8,7 +8,7 @@ const socket = io();
 // ✅ Quando uma nova log for emitida pelo backend, recarrega automaticamente.
 socket.on('nova_log', (deviceId) => {
   console.log(`📡 Nova log detectada para o device: ${deviceId}`);
-  window.carregarTodosLogs();
+  window.carregarTodosLogs(); // ✅ Atualiza automaticamente.
 });
 
 // 🔁 Atualiza limite de visualização
@@ -94,7 +94,7 @@ function renderizarLogs() {
     const div = document.createElement('div');
     div.className = 'log';
     div.innerHTML = `
-      <time><strong>${log.modelo}</strong> ${log.timestamp} - <em>ID: ${log.deviceId}</em></time><br/>
+      <time><strong>${log.modelo || 'Desconhecido'}</strong> ${log.timestamp} - <em>ID: ${log.deviceId}</em></time><br/>
       CPU: ${log.cpu}<br/>
       RAM: ${log.ram}<br/>
       Dados Móveis: ${log.dadosMoveis}<br/>
