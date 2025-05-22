@@ -2,6 +2,9 @@ let todosLogs = [];
 let paginaAtual = 1;
 let limitePorPagina = 50;
 
+// 🌐 URL do backend no Render
+const API_BASE = 'https://site-log-device.onrender.com';
+
 // 🔁 Atualiza limite de visualização
 window.atualizarLimite = function () {
   const valor = document.getElementById('limitSelect').value;
@@ -22,7 +25,7 @@ window.buscarLogs = async function () {
   logContainer.innerHTML = 'Carregando logs do dispositivo...';
 
   try {
-    const response = await fetch(`https://site-log-device.onrender.com:3000/api/logs/${deviceId}`);
+    const response = await fetch(`${API_BASE}/api/logs/${deviceId}`);
     const data = await response.json();
     const wrapper = data ? { [deviceId]: data } : {};
     processarLogs(wrapper);
@@ -38,7 +41,7 @@ window.carregarTodosLogs = async function () {
   logContainer.innerHTML = 'Carregando logs...';
 
   try {
-    const response = await fetch('https://site-log-device.onrender.com:3000/api/logs');
+    const response = await fetch(`${API_BASE}/api/logs`);
     const data = await response.json();
     processarLogs(data);
   } catch (err) {
@@ -47,7 +50,7 @@ window.carregarTodosLogs = async function () {
   }
 };
 
-// 🔄 Processa logs do Firebase
+// 🔄 Processa logs
 function processarLogs(data) {
   todosLogs = [];
 
