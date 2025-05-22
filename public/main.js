@@ -1,6 +1,3 @@
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-
-<script>
 let todosLogs = [];
 let paginaAtual = 1;
 let limitePorPagina = 50;
@@ -8,7 +5,7 @@ let limitePorPagina = 50;
 // ✅ Conectar ao WebSocket
 const socket = io();
 
- ✅ Quando uma nova log for emitida pelo backend, recarrega automaticamente.
+// ✅ Quando uma nova log for emitida pelo backend, recarrega automaticamente.
 socket.on('nova_log', (deviceId) => {
   console.log(`📡 Nova log detectada para o device: ${deviceId}`);
   window.carregarTodosLogs();
@@ -163,4 +160,3 @@ window.exportarCSV = function () {
 window.onload = () => {
   window.carregarTodosLogs();
 };
-</script>
