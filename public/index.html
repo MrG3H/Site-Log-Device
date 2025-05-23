@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Histórico de Logs dos Dispositivos</title>
-  <link rel="stylesheet" href="style.css" />
-  
+  <link rel="stylesheet" href="style.css">
+
   <!-- ✅ Socket.IO Client -->
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </head>
 <body>
+
   <h1>Histórico de Logs dos Dispositivos</h1>
 
-  <div style="text-align:center;">
-    <input type="text" id="deviceIdInput" placeholder="Digite o ID do dispositivo" />
+  <div style="text-align: center;">
+    <input type="text" id="deviceIdInput" placeholder="Digite o ID do dispositivo" autocomplete="off">
     <button onclick="buscarLogs()">Buscar</button>
     <button onclick="carregarTodosLogs()">Ver todos</button>
+    
     <label for="limitSelect">Mostrar:</label>
     <select id="limitSelect" onchange="atualizarLimite()">
       <option value="50">50</option>
@@ -22,13 +24,14 @@
       <option value="200">200</option>
       <option value="all">Todos</option>
     </select>
+    
     <button onclick="exportarCSV()">Exportar CSV</button>
   </div>
 
   <div id="log-container">Carregando logs...</div>
   <div class="pagination" id="pagination"></div>
 
-  <!-- ✅ Removido type="module" -->
+  <!-- ✅ Boa prática: scripts no final -->
   <script src="main.js"></script>
 </body>
 </html>
