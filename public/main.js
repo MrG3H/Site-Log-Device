@@ -172,7 +172,7 @@ function renderizarPaginacao() {
   // Mostrar ... se estiver longe da última página
   if (paginaAtual < totalPaginas - 3) {
     const dots = document.createElement('span');
-    dots.innerText = ' ... ';
+    dots.innerText = ' - ';
     pagination.appendChild(dots);
   }
 
