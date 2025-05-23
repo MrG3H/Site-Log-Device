@@ -108,6 +108,20 @@ function renderizarLogs() {
   }
 
   logsPagina.forEach(log => {
+    // Calcula % de uso de RAM
+    let aviso = '';
+    const ramDados = log.ram.match(/(\d+)\s*MB\s*\/\s*(\d+)\s*MB/);
+
+    if (ramDados) {
+      const usada = parseInt(ramDados[1], 10);
+      const total = parseInt(ramDados[2], 10);
+      const percentual = (usada / total) * 100;
+
+      if (percentual >= 85) {
+        aviso = '<br/><strong style="color:red;">⚠️ Device usando mais de 85% de memória RAM!</strong>';
+      }
+    }
+
     const div = document.createElement('div');
     div.className = 'log';
     div.innerHTML = `
@@ -116,6 +130,7 @@ function renderizarLogs() {
       RAM: ${log.ram}<br/>
       Dados Móveis: ${log.dadosMoveis}<br/>
       Wi-Fi: ${log.wifi}
+      ${aviso}
     `;
     logContainer.appendChild(div);
   });
