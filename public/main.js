@@ -108,22 +108,27 @@ function renderizarLogs() {
   }
 
   logsPagina.forEach(log => {
-    // Calcula % de uso de RAM
     let aviso = '';
-    const ramDados = log.ram.match(/(\d+)\s*MB\s*\/\s*(\d+)\s*MB/);
 
-    if (ramDados) {
-      const usada = parseInt(ramDados[1], 10);
-      const total = parseInt(ramDados[2], 10);
-      const percentual = (usada / total) * 100;
+    let ramUsada = 0, ramTotal = 0;
+    let usoPercentual = 0;
 
-      if (percentual >= 50) {
-        aviso = '<br/><strong style="color:red;">⚠️ Device usando mais de 85% de memória RAM!</strong>';
+    if (log.ram) {
+      const ramMatch = log.ram.match(/(\d+)\s*MB\s*\/\s*(\d+)\s*MB/);
+      if (ramMatch) {
+        ramUsada = parseInt(ramMatch[1]);
+        ramTotal = parseInt(ramMatch[2]);
+        usoPercentual = (ramUsada / ramTotal) * 100;
+
+        if (usoPercentual >= 50) {
+          aviso = `<br/><strong style="color:red;">⚠️ Device usando mais de 50% de memória RAM! (${usoPercentual.toFixed(1)}%)</strong>`;
+        }
       }
     }
 
     const div = document.createElement('div');
     div.className = 'log';
+
     div.innerHTML = `
       <time><strong>${log.modelo || 'Desconhecido'}</strong> ${log.timestamp} - <em>ID: ${log.deviceId}</em></time><br/>
       CPU: ${log.cpu}<br/>
@@ -132,6 +137,7 @@ function renderizarLogs() {
       Wi-Fi: ${log.wifi}
       ${aviso}
     `;
+
     logContainer.appendChild(div);
   });
 
