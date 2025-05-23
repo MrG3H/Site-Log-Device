@@ -117,7 +117,7 @@ function renderizarLogs() {
       const total = parseInt(ramDados[2], 10);
       const percentual = (usada / total) * 100;
 
-      if (percentual >= 85) {
+      if (percentual >= 50) {
         aviso = '<br/><strong style="color:red;">⚠️ Device usando mais de 85% de memória RAM!</strong>';
       }
     }
