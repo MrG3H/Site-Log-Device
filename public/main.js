@@ -129,7 +129,33 @@ function renderizarPaginacao() {
   const pagination = document.getElementById('pagination');
   pagination.innerHTML = '';
 
-  for (let i = 1; i <= totalPaginas; i++) {
+  if (totalPaginas <= 1) return;
+
+  // Botão da primeira página
+  const firstBtn = document.createElement('button');
+  firstBtn.innerText = '1';
+  firstBtn.onclick = () => {
+    paginaAtual = 1;
+    renderizarLogs();
+  };
+  if (paginaAtual === 1) {
+    firstBtn.style.backgroundColor = '#007bff';
+    firstBtn.style.color = '#fff';
+  }
+  pagination.appendChild(firstBtn);
+
+  // Mostrar ... se estiver longe da primeira página
+  if (paginaAtual > 4) {
+    const dots = document.createElement('span');
+    dots.innerText = ' ... ';
+    pagination.appendChild(dots);
+  }
+
+  // Páginas próximas (anterior, atual, próxima)
+  const start = Math.max(2, paginaAtual - 1);
+  const end = Math.min(totalPaginas - 1, paginaAtual + 1);
+
+  for (let i = start; i <= end; i++) {
     const btn = document.createElement('button');
     btn.innerText = i;
     btn.onclick = () => {
@@ -141,6 +167,28 @@ function renderizarPaginacao() {
       btn.style.color = '#fff';
     }
     pagination.appendChild(btn);
+  }
+
+  // Mostrar ... se estiver longe da última página
+  if (paginaAtual < totalPaginas - 3) {
+    const dots = document.createElement('span');
+    dots.innerText = ' ... ';
+    pagination.appendChild(dots);
+  }
+
+  // Botão da última página
+  if (totalPaginas > 1) {
+    const lastBtn = document.createElement('button');
+    lastBtn.innerText = totalPaginas;
+    lastBtn.onclick = () => {
+      paginaAtual = totalPaginas;
+      renderizarLogs();
+    };
+    if (paginaAtual === totalPaginas) {
+      lastBtn.style.backgroundColor = '#007bff';
+      lastBtn.style.color = '#fff';
+    }
+    pagination.appendChild(lastBtn);
   }
 }
 
